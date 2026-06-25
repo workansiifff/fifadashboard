@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA World Cup 2026 - Tournament Dashboard</title>
+  <meta name="description" content="Official-grade analytics dashboard for the FIFA World Cup 2026. Review matches, group standings, rankings, and team statistics.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Preconnect and import Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Animated Background Elements -->
+  <div class="bg-overlay"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="pitch-pattern"></div>
+  <div class="particles-container" id="particles-container"></div>
+
+  <!-- Sticky Header & Navigation -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="#" class="logo-area" aria-label="FIFA World Cup 2026 Home">
+        <img src="logo.png" alt="FIFA World Cup Logo" class="header-logo-img">
+        <div class="logo-text">
+          <span class="logo-title">FIFA WORLD CUP</span>
+          <span class="logo-subtitle">2026 Dashboard</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Main Navigation">
+        <button class="nav-btn" data-target="group-stage" aria-label="Scroll to Groups Section">Groups</button>
+        <button class="nav-btn" data-target="standings-section" aria-label="Scroll to Standings Section">Standings</button>
+        <button class="nav-btn" data-target="about-section" aria-label="Scroll to About Section">About</button>
+      </nav>
+
+      <div class="header-actions">
+        <button id="refresh-btn" class="action-btn" title="Refresh Statistics" aria-label="Refresh Dashboard Data">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l.73-.72"/>
+          </svg>
+        </button>
+        <button id="theme-toggle" class="action-btn" title="Toggle Theme" aria-label="Toggle Light/Dark Theme">
+          <!-- Sun Icon -->
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 18.36l1.42-1.42M18.36 4.22l1.42-1.42"/>
+          </svg>
+          <!-- Moon Icon -->
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+  <main class="dashboard-wrapper">
+    <!-- Top Hero Glass UI -->
+    <section class="hero-section" id="hero">
+      <div class="hero-glass-card">
+        <div class="hero-top-accent"></div>
+        <div class="hero-flex-layout">
+          <div class="hero-content">
+            <div class="badge-world-cup">
+              <span class="glow-dot"></span>
+              🏆 FIFA WORLD CUP 2026
+            </div>
+            <h1>Tournament Dashboard</h1>
+            <p class="hero-lead">Real-time statistics, standings analyzer, and group stages progress visualization.</p>
+            
+            <div class="hero-metadata">
+              <div class="meta-item">
+                <span class="meta-label">Current Matchday</span>
+                <span class="meta-value">Matchday 3 of 3</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Current Group Selected</span>
+                <span class="meta-value" id="current-group-badge">All Groups</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">League Status</span>
+                <span class="meta-value status-active">Active Stage</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Last Updated</span>
+                <span class="meta-value" id="last-updated">Calculating...</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-logo-showcase">
+            <img src="logo.png" alt="FIFA World Cup Trophy Logo" class="hero-trophy-img">
+          </div>
+        </div>
+      </div>
+
+      <!-- Animated Glass Stats Cards Grid -->
+      <div class="stats-grid">
+        <!-- Teams -->
+        <div class="stat-card" style="--animation-delay: 0.1s">
+          <div class="stat-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Teams</span>
+            <span class="stat-number" id="stat-teams" data-target="16">0</span>
+          </div>
+        </div>
+
+        <!-- Matches -->
+        <div class="stat-card" style="--animation-delay: 0.2s">
+          <div class="stat-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M6.2 6.2L17.8 17.8M17.8 6.2L6.2 17.8M12 2v20M2 12h20"/>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Matches</span>
+            <span class="stat-number" id="stat-matches" data-target="24">0</span>
+          </div>
+        </div>
+
+        <!-- Leader -->
+        <div class="stat-card leader-card" style="--animation-delay: 0.3s">
+          <div class="stat-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Leader</span>
+            <span class="stat-number" id="stat-leader">Calculating...</span>
+          </div>
+        </div>
+
+        <!-- Avg Points -->
+        <div class="stat-card" style="--animation-delay: 0.4s">
+          <div class="stat-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 6l-9.5 9.5-5-5L1 18M17 6h6v6"/>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Avg Points</span>
+            <span class="stat-number" id="stat-avg-points">0.0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Group Explorer Section -->
+    <section class="section-container" id="group-stage">
+      <div class="section-header">
+        <div>
+          <span class="section-tagline">Stage 1</span>
+          <h2 class="section-title">Group Explorer</h2>
+        </div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Accordion Grid -->
+      <div class="accordion-container">
+        <!-- Group A -->
+        <div class="accordion-item" data-group="A">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="group-a-content">
+            <span class="accordion-title">Group A</span>
+            <span class="accordion-chevron">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </span>
+          </button>
+          <div id="group-a-content" class="accordion-content" role="region">
+            <div class="accordion-inner" id="group-a-teams-list">
+              <!-- Dynamically populated rows -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Group B -->
+        <div class="accordion-item" data-group="B">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="group-b-content">
+            <span class="accordion-title">Group B</span>
+            <span class="accordion-chevron">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </span>
+          </button>
+          <div id="group-b-content" class="accordion-content" role="region">
+            <div class="accordion-inner" id="group-b-teams-list">
+              <!-- Dynamically populated rows -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Group C -->
+        <div class="accordion-item" data-group="C">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="group-c-content">
+            <span class="accordion-title">Group C</span>
+            <span class="accordion-chevron">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </span>
+          </button>
+          <div id="group-c-content" class="accordion-content" role="region">
+            <div class="accordion-inner" id="group-c-teams-list">
+              <!-- Dynamically populated rows -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Group D -->
+        <div class="accordion-item" data-group="D">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="group-d-content">
+            <span class="accordion-title">Group D</span>
+            <span class="accordion-chevron">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </span>
+          </button>
+          <div id="group-d-content" class="accordion-content" role="region">
+            <div class="accordion-inner" id="group-d-teams-list">
+              <!-- Dynamically populated rows -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Standings Dashboard Section -->
+    <section class="section-container" id="standings-section">
+      <div class="section-header">
+        <div>
+          <span class="section-tagline">Real-time Analysis</span>
+          <h2 class="section-title">Standings Dashboard</h2>
+        </div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Controls Panel -->
+      <div class="controls-panel">
+        <!-- Search bar -->
+        <div class="search-box">
+          <span class="search-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+          </span>
+          <input type="text" id="team-search" placeholder="Search teams, groups, or rankings..." aria-label="Search teams">
+          <button id="clear-search-btn" class="clear-search-btn" title="Clear Search" aria-label="Clear Search Input">✕</button>
+        </div>
+
+        <!-- Filter Quick Tags -->
+        <div class="filter-tags" aria-label="Filter groups quick tags">
+          <button class="tag-btn active" data-filter="all">All Groups</button>
+          <button class="tag-btn" data-filter="A">Group A</button>
+          <button class="tag-btn" data-filter="B">Group B</button>
+          <button class="tag-btn" data-filter="C">Group C</button>
+          <button class="tag-btn" data-filter="D">Group D</button>
+        </div>
+      </div>
+
+      <!-- Standings Table Box -->
+      <div class="standings-table-container scrollbar-styled">
+        <table class="standings-table" id="standings-table">
+          <thead>
+            <tr>
+              <th scope="col" class="th-rank">Rank</th>
+              <th scope="col" class="th-team">Team</th>
+              <th scope="col" class="sortable th-numeric" data-sort="played">
+                <span>Pld</span>
+                <span class="sort-indicator"></span>
+              </th>
+              <th scope="col" class="sortable th-numeric" data-sort="wins">
+                <span>W</span>
+                <span class="sort-indicator"></span>
+              </th>
+              <th scope="col" class="sortable th-numeric" data-sort="draws">
+                <span>D</span>
+                <span class="sort-indicator"></span>
+              </th>
+              <th scope="col" class="sortable th-numeric" data-sort="losses">
+                <span>L</span>
+                <span class="sort-indicator"></span>
+              </th>
+              <th scope="col" class="sortable th-numeric" data-sort="goalsScored">
+                <span>GS</span>
+                <span class="sort-indicator"></span>
+              </th>
+              <th scope="col" class="sortable th-numeric" data-sort="goalsAgainst">
+                <span>GA</span>
+                <span class="sort-indicator"></span>
+              </th>
+              <th scope="col" class="sortable th-numeric" data-sort="goalDifference">
+                <span>GD</span>
+                <span class="sort-indicator"></span>
+              </th>
+              <th scope="col" class="sortable th-numeric active-sort" data-sort="points">
+                <span>Pts</span>
+                <span class="sort-indicator desc"></span>
+              </th>
+              <th scope="col" class="th-form">Form</th>
+            </tr>
+          </thead>
+          <tbody id="standings-body">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+        
+        <!-- Empty Search Result State -->
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-state-icon">🔍</div>
+          <h3>No Teams Match Your Search</h3>
+          <p>Try searching for a different country name or group.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section-container" id="about-section">
+      <div class="section-header">
+        <div>
+          <span class="section-tagline">Hackathon Project</span>
+          <h2 class="section-title">About the Dashboard</h2>
+        </div>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="about-glass-card">
+        <div class="about-grid">
+          <div class="about-info">
+            <h3>FIFA World Cup 2026 Analytics</h3>
+            <p>Designed and built for the official FIFA Hackathon, this analytics portal provides fans, analysts, and press organizations with real-time computational standings updates, sorting metrics, and grouping distributions for the landmark 2026 edition.</p>
+            <p>Built completely on a vanilla architecture, it ensures maximum loading speeds, standard-compliant keyboard navigation accessibility, and highly optimized responsive adjustments across screen footprints ranging from standard handheld phones to large-screen high-resolution projection screens.</p>
+          </div>
+          <div class="about-tech">
+            <h3>Vanilla Core Stack</h3>
+            <ul class="tech-list">
+              <li>
+                <span class="tech-icon">HTML5</span>
+                <span class="tech-desc">Semantic document tree structuring & accessibility bindings</span>
+              </li>
+              <li>
+                <span class="tech-icon">CSS3</span>
+                <span class="tech-desc">GPU-accelerated flex grid layouts & dark/light glass themes</span>
+              </li>
+              <li>
+                <span class="tech-icon">JS</span>
+                <span class="tech-desc">Client-side sorting algorithms, counters, & search indexes</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sticky Footer -->
+  <footer class="footer-glass">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">🏆 FIFA 2026</span>
+        <span class="footer-tagline">Built for FIFA Hackathon</span>
+      </div>
+      
+      <div class="footer-team">
+        <span class="team-name">Team: <strong>FIFO</strong></span>
+        <span class="team-country">Country: <strong>Uruguay</strong></span>
+        <span class="team-members">Members: <strong>Uruguay Developer</strong></span>
+      </div>
+
+      <div class="footer-meta">
+        <a href="https://github.com/notjamestbh" target="_blank" rel="noopener noreferrer" class="github-link">
+          <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.646.64.699 1.026 1.592 1.026 2.683 0 3.842-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+          </svg>
+          <span>notjamestbh</span>
+        </a>
+        <span class="footer-year" id="footer-year">2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
